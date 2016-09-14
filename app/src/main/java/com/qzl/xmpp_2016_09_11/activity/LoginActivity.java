@@ -10,6 +10,7 @@ import android.widget.EditText;
 
 import com.qzl.xmpp_2016_09_11.R;
 import com.qzl.xmpp_2016_09_11.service.IMService;
+import com.qzl.xmpp_2016_09_11.service.PushService;
 import com.qzl.xmpp_2016_09_11.utils.ThreadUtils;
 import com.qzl.xmpp_2016_09_11.utils.ToastUtils;
 
@@ -86,7 +87,8 @@ public class LoginActivity extends AppCompatActivity {
 
                             //需要启动services
                             startService(new Intent(LoginActivity.this,IMService.class));
-
+                            //启动推送的服务
+                            startService(new Intent(LoginActivity.this, PushService.class));
                         } catch (final XMPPException e) {
                             e.printStackTrace();
                             ToastUtils.showToastSafe(getApplicationContext(),"登录失败");

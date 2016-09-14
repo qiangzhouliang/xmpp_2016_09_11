@@ -5,26 +5,32 @@ import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.UriMatcher;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.support.annotation.Nullable;
 
 import com.qzl.xmpp_2016_09_11.dbhelper.SmsOpenHelper;
 
 /**
+ * 消息SmsProvider
  * Created by Qzl on 2016-09-13.
  */
 public class SmsProvider extends ContentProvider {
 
     private static final String AUTHORITIES = SmsProvider.class.getCanonicalName();//主机名称
-
     static UriMatcher sUriMatcher ;
+
+    public static final Uri URI_SESSION = Uri.parse("content://" + AUTHORITIES + "/session");
     public static Uri URI_SMS = Uri.parse("content://" + AUTHORITIES + "/sms");
+
     public static final int SMS = 1;
+    public static final int SESSION = 2;
 
     static {
         sUriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
         //添加匹配规则
         sUriMatcher.addURI(AUTHORITIES,"/sms", SMS);
+        sUriMatcher.addURI(AUTHORITIES,"/session", SESSION);
     }
 
     private SmsOpenHelper mHelper;
@@ -102,6 +108,12 @@ public class SmsProvider extends ContentProvider {
             case SMS:
                 c = mHelper.getWritableDatabase().query(SmsOpenHelper.T_SMS, projection, selection, selectionArgs, null, null, sortOrder);
                 System.out.println("SmsProvider 查寻成功");
+                break;
+            case SESSION:
+                SQLiteDatabase db = mHelper.getReadableDatabase();
+                c = db.rawQuery("SELECT * FROM "//
+                        + "(SELECT * FROM t_sms WHERE from_account = ? or to_account = ? ORDER BY time ASC)" //
+                        + " GROUP BY session_account", selectionArgs);//
                 break;
         }
         return c;

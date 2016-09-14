@@ -85,13 +85,13 @@ public class ContactsFragment extends Fragment {
     private void initData() {
 
         //设置adapter，显示数据
-        setOrUpdateAdapter();
+        setOrNotifyAdapter();
     }
 
     /**
      * 设置或者更新adapter
      */
-    private void setOrUpdateAdapter() {
+    private void setOrNotifyAdapter() {
         //判断adapter是否存在
         if (mAdapter != null) {
             //刷新adapter
@@ -184,7 +184,7 @@ class MyContentObserver extends ContentObserver {
     public void onChange(boolean selfChange, Uri uri) {
         super.onChange(selfChange, uri);
         //更新adapter或者刷新adapter
-        setOrUpdateAdapter();
+        setOrNotifyAdapter();
     }
 }
 }
